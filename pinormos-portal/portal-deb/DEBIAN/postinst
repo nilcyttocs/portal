@@ -1,0 +1,22 @@
+#!/bin/sh
+
+# Post-installation shell script for Debian package
+
+SYSTEMD=/etc/systemd/system/multi-user.target.wants
+SERVICE=nginx.service
+
+sudo sed -i 's/ update_daemon\.service//g' /lib/systemd/system/adbd.service
+
+sudo chown root:root /etc/nginx/nginx.conf.*
+sudo cp /etc/nginx/nginx.conf.updated /etc/nginx/nginx.conf
+
+sudo chown -R root:root /var/www/html/update_status/
+sudo chmod 755 /var/www/html/update_status/progress.sh
+
+sudo chown root:root /etc/nginx/sites-available/*
+sudo ln -sf /etc/nginx/sites-available/portal /etc/nginx/sites-enabled/
+sudo ln -sf /etc/nginx/sites-available/update_status /etc/nginx/sites-enabled/
+
+sudo systemctl daemon-reload
+sudo systemctl start $SERVICE
+sudo systemctl enable $SERVICE

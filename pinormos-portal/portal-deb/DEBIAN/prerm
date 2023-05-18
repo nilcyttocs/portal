@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# Pre-removal shell script for Debian package
+
+SYSTEMD=/etc/systemd/system/multi-user.target.wants
+SERVICE=nginx.service
+
+sudo cp /etc/nginx/nginx.conf.original /etc/nginx/nginx.conf
+
+# Stop and disable Nginx service
+if [ -f $SYSTEMD/$SERVICE ]; then
+  systemctl is-active $SERVICE > /dev/null 2>&1 && sudo systemctl stop $SERVICE
+  sudo systemctl disable $SERVICE
+fi

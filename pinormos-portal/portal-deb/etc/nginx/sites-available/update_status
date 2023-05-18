@@ -1,0 +1,20 @@
+server {
+    listen 8080;
+    listen [::]:8080;
+
+    root /var/www/html/update_status/build;
+    index index.html;
+
+    server_name _;
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    location /progress {
+        root /var/www/html/update_status/;
+        fastcgi_pass unix:/run/fcgiwrap.socket;
+        include /etc/nginx/fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME /var/www/html/update_status/progress.sh;
+    } 
+}
